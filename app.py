@@ -2,8 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 
-# 1. Page Configuration
-st.set_page_config(page_title="Cheap Bastard Luxury Monitor", layout="centered")
+# 1. Page Configuration (Added the hotel emoji as a favicon)
+st.set_page_config(page_title="Cheap Bastard Luxury Monitor", page_icon="🏨", layout="centered")
 
 st.markdown("""
 <style>
@@ -27,7 +27,6 @@ with col3:
     st.write(""); st.write("")
     search_button = st.button("Scour the US")
 
-# Focused list of high-probability luxury hubs to save your API credits
 HUBS = [
     "New York", "Los Angeles", "Chicago", "Miami", "Washington DC",
     "San Francisco", "Boston", "Dallas", "Houston", "Las Vegas",
@@ -51,7 +50,7 @@ if search_button:
         try:
             params = {
                 "engine": "google_hotels", 
-                "q": f"Four Seasons Ritz St Regis in {city}", # Explicit brand search
+                "q": f"Four Seasons Ritz St Regis in {city}", 
                 "check_in_date": str(check_in), 
                 "check_out_date": str(check_out),
                 "brands": TARGET_BRANDS, 
@@ -75,9 +74,7 @@ if search_button:
 
     if all_results:
         df = pd.DataFrame(all_results)
-        # Drop duplicates in case a hotel shows up twice
         df = df.drop_duplicates(subset=['Hotel_Name', 'City'])
-        
         st.success(f"✅ {len(df)} targeted luxury stays found.")
 
         st.dataframe(
@@ -94,4 +91,3 @@ if search_button:
         st.download_button("⬇️ Download Deals to CSV", data=csv, file_name="luxury_deals.csv")
     else:
         st.warning("No targeted brands found for these dates.")
-        
