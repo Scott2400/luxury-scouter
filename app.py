@@ -70,7 +70,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 2. Header
-st.title("🏨 The 'Cheap Bastard' Luxury Monitor")
+st.title("🏨 The Cheap Bastard Luxury Monitor")
 st.markdown("**Targeting:** Four Seasons · Ritz-Carlton · St. Regis · Peninsula · Aman · Dorchester")
 st.markdown("---")
 
@@ -126,6 +126,7 @@ if search_button:
             "check_out_date": str(check_out),
             "brands": TARGET_BRANDS,
             "currency": "USD",
+                "num": 20,
             "gl": "us",
             "api_key": API_KEY
         }
