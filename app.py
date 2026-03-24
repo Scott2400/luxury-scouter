@@ -27,22 +27,14 @@ with col3:
     st.write(""); st.write("")
     search_button = st.button("Scour the US")
 
+# Focused list of high-probability luxury hubs to save your API credits
 HUBS = [
     "New York", "Los Angeles", "Chicago", "Miami", "Washington DC",
     "San Francisco", "Boston", "Dallas", "Houston", "Las Vegas",
     "Atlanta", "Seattle", "Denver", "Phoenix", "New Orleans",
     "Philadelphia", "Austin", "Nashville", "Orlando", "San Diego",
     "St. Louis", "Charleston", "Scottsdale", "Aspen", "Vail",
-    "Honolulu", "Maui", "Palm Beach", "Beverly Hills", "Santa Barbara",
-    "Napa", "Sonoma", "Monterey", "Portland", "Salt Lake City",
-    "Minneapolis", "Detroit", "Cleveland", "Pittsburgh", "Baltimore",
-    "Tampa", "Fort Lauderdale", "Sarasota", "Key West", "Savannah",
-    "Charlotte", "Raleigh", "Richmond", "Memphis", "Louisville",
-    "Indianapolis", "Kansas City", "Omaha", "Oklahoma City", "Tulsa",
-    "Albuquerque", "Santa Fe", "Tucson", "El Paso", "San Antonio",
-    "Baton Rouge", "Jackson Hole", "Telluride", "Park City", "Big Sur",
-    "Laguna Beach", "Palm Springs", "Sedona", "Hilton Head", "Kiawah Island",
-    "Nantucket", "Martha's Vineyard", "Newport", "Greenwich", "Kennebunkport",
+    "Honolulu", "Maui", "Palm Beach", "Beverly Hills", "Santa Barbara"
 ]
 
 TARGET_BRANDS = "33,67,101,114,168,215"
@@ -54,13 +46,18 @@ if search_button:
     status_text = st.empty()
 
     for i, city in enumerate(HUBS):
-        status_text.markdown(f"🔍 Searching **{city}**... ({i+1}/{len(HUBS)})")
+        status_text.markdown(f"🔍 Sniping **{city}**... ({i+1}/{len(HUBS)})")
         progress_bar.progress((i + 1) / len(HUBS))
         try:
             params = {
-                "engine": "google_hotels", "q": f"luxury hotels in {city}",
-                "check_in_date": str(check_in), "check_out_date": str(check_out),
-                "brands": TARGET_BRANDS, "currency": "USD", "gl": "us", "api_key": API_KEY
+                "engine": "google_hotels", 
+                "q": f"Four Seasons Ritz St Regis in {city}", # Explicit brand search
+                "check_in_date": str(check_in), 
+                "check_out_date": str(check_out),
+                "brands": TARGET_BRANDS, 
+                "currency": "USD", 
+                "gl": "us", 
+                "api_key": API_KEY
             }
             res = requests.get("https://serpapi.com/search", params=params).json()
             for h in res.get('properties', []):
@@ -78,7 +75,10 @@ if search_button:
 
     if all_results:
         df = pd.DataFrame(all_results)
-        st.success(f"✅ {len(df)} hotels found across {len(HUBS)} cities")
+        # Drop duplicates in case a hotel shows up twice
+        df = df.drop_duplicates(subset=['Hotel_Name', 'City'])
+        
+        st.success(f"✅ {len(df)} targeted luxury stays found.")
 
         st.dataframe(
             df[['Hotel_Name', 'Nightly Rate', 'Total Stay', 'City', 'Hotel']],
@@ -93,4 +93,5 @@ if search_button:
         csv = df.to_csv(index=False).encode('utf-8')
         st.download_button("⬇️ Download Deals to CSV", data=csv, file_name="luxury_deals.csv")
     else:
-        st.warning("No hotels found.")
+        st.warning("No targeted brands found for these dates.")
+        
