@@ -65,11 +65,11 @@ if search_button:
             res = requests.get("https://serpapi.com/search", params=params).json()
             for h in res.get('properties', []):
                 all_results.append({
-                    "Hotel": h.get('name'),
+                    "Hotel": h.get('link') or h.get('serpapi_property_url') or "",
+                    "Hotel_Name": h.get('name'),
                     "Nightly Rate": h.get('rate_per_night', {}).get('lowest'),
                     "Total Stay": h.get('total_rate', {}).get('lowest'),
-                    "City": city,
-                    "Link": h.get('link') or h.get('serpapi_property_url') or ""
+                    "City": city
                 })
         except: continue
 
@@ -80,11 +80,11 @@ if search_button:
         df = pd.DataFrame(all_results)
         st.success(f"✅ {len(df)} hotels found across {len(HUBS)} cities")
 
-        # This table allows you to click the column headers to sort!
         st.dataframe(
-            df[['Hotel', 'Nightly Rate', 'Total Stay', 'City']],
+            df[['Hotel_Name', 'Nightly Rate', 'Total Stay', 'City', 'Hotel']],
             column_config={
-                "Hotel": st.column_config.LinkColumn("Hotel", display_text=df['Hotel'], help="Click to view hotel"),
+                "Hotel": st.column_config.LinkColumn("Link"),
+                "Hotel_Name": "Hotel"
             },
             hide_index=True,
             use_container_width=True
