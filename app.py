@@ -2,8 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 
-# 1. Page Configuration (Added the hotel emoji as a favicon)
-st.set_page_config(page_title="Cheap Bastard Luxury Monitor", page_icon="🏨", layout="centered")
+# 1. Page Configuration (Favicon set to 💩)
+st.set_page_config(page_title="Cheap Bastard Luxury Monitor", page_icon="💩", layout="centered")
 
 st.markdown("""
 <style>
